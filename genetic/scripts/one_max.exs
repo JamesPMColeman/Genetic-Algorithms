@@ -21,7 +21,20 @@ crossover =
 				[h1 ++ t2, h2 ++ t1 | acc]
 			end
 		)
- 	end
+ 	end	
+mutation = 
+	fn population ->
+		population
+			|> Enum.map(
+				fn chromosome ->
+					if :rand.uniform() < 0.05 do
+						Enum.shuffle(chromosome)
+					else
+						chromosome
+					end
+				end
+			)
+	end
 
 algorithm = 
 	fn population, algorithm ->
@@ -34,6 +47,7 @@ algorithm =
 			|> evaluate.()				# Evaluate Population
 			|> selection.()				# Select Chromosomes 
 			|> crossover.()				# Genetic recombination
+			|> mutation.()
 			|> algorithm.(algorithm)	# Repeat the process with next generation
 		end	
 	end
