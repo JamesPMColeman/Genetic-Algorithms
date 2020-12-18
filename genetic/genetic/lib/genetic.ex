@@ -1,19 +1,20 @@
-def initialize(genotype) do
+def initialize(genotype, opts \\ []) do
+  population_size = Keyword.get(opts, :population_size, 100)
   for _ <- 1..100, do: genotype.()
 end
 
-def evaluate(population, fitness_function) do
+def evaluate(population, fitness_function, opts \\ []) do
   population
   |> Enum.sort_by(fitness_function, &>=/2)
 end
 
-def select(population) do
+def select(population, opts \\ []) do
   population
   |> Enum.chunk_every(2)
   |> Enum.map(&List.to_tuple(&1))
 end
 
-def crossover(population) do
+def crossover(population, opts \\ []) do
   population
   |> Enum.reduce([],
 	  fn {p1, p2}, acc ->
@@ -27,7 +28,7 @@ def crossover(population) do
 	)
 end
 
-def mutation(population) do
+def mutation(population, opts \\ []) do
   population
   |> Enum.map(
 	  fn chromosome ->
@@ -40,25 +41,25 @@ def mutation(population) do
 	)
 end
 
-def run(...) do
+def run(fitness_function, genotype, max_fitness, opts \\ []) do
 
-  population = initialize()
+  population = initialize(genotype, opts)
   population
-  |> evolve()
+  |> evolve(fitness_function, genotype, max_fitness, opts)
 
 end
 
-def evolve(population, max_fitness) do
-  population = evaluate(population, ..., opts)
+def evolve(population, fitness_function, genotype, max_fitness, opts \\ []) do
+  population = evaluate(population, fitness_function, opts)
   best = hd(population)
-  IO.write("\rCurrent Best: ...")
-  if ... == max_fitness do
+  IO.write("\rCurrent Best: #{fitness_function.(best)}")
+  if fitness_function.(best) == max_fitness do
 	best
   else
 	population
-	|> select()
-	|> crossover()
-	|> mutation()
-	|> evolve()
+	|> select(opts)
+	|> crossover(opts)
+	|> mutation(opts)
+	|> evolve(fitness_function, genotype, max_fitness, opts)
   end
 end
