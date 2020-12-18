@@ -1,6 +1,6 @@
 def initialize(genotype, opts \\ []) do
   population_size = Keyword.get(opts, :population_size, 100)
-  for _ <- 1..100, do: genotype.()
+  for _ <- 1..population_size, do: genotype.()
 end
 
 def evaluate(population, fitness_function, opts \\ []) do
