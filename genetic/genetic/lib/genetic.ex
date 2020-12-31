@@ -16,7 +16,7 @@ defmodule Genetic do
 			%Chromosome{chromosome | fitness: fitness, age: age}
 		end
 	  )
-    |> Enum.sort_by(fitness_function, &>=/2)
+    |> Enum.sort_by(& &1.fitness, &>=/2)
   end
 
   def select(population, opts \\ []) do
